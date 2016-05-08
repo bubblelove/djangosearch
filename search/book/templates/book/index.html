@@ -1,0 +1,13 @@
+{% load staticfiles %}
+<h1>hello book</h1>
+{% if request.user.is_authenticated %}
+        <div class="pull-right">
+            <a href=#>欢迎您：{{ request.user }}</a>  
+            <a class="btn danger small" href="{% url 'book:logout' %}">注销</a>
+        </div>
+{% endif %}
+<link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
+{% for book in booklist %}
+<li><a href="{% url 'book:books' book.id %}">{{ book.name}}</a></li>
+{{ book.author }}
+{% endfor %}

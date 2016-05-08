@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+from django.http import HttpResponse
+from django.shortcuts import render
+from .forms import LoginForm
+
+def login(request):
+	if request.method == 'POST':
+		form = LoginForm(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			password = form.cleaned_data['password']
+			return HttpResponse()#change redirect
+	else:
+		form = LoginForm()
+	return render(request, 'search/login.html', {'form': form})
