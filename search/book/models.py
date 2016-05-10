@@ -35,7 +35,19 @@ class User(models.Model):
 	username = models.CharField(max_length=20)
 	password_hash = models.CharField(max_length=2000)
 	realname = models.CharField(max_length=10, blank=True)
-	age = models.IntegerField(blank=True)
+	age = models.IntegerField(null=True, blank=True)
 	email = models.EmailField()
 	phone = models.IntegerField()
-	headimg = models.FileField(upload_to = '../upload/', blank=True)
+
+class Headimg(models.Model):
+	img = models.FileField(upload_to = '../upload/', blank=True)
+
+'''class Task(models.Model):
+    ...
+    class Meta:
+        permissions = (
+            ("view_task", "Can see available tasks"),
+            ("change_task_status", "Can change the status of tasks"),
+            ("close_task", "Can remove a task by setting its status as closed"),
+        )
+'''

@@ -25,16 +25,19 @@ def index(request):
 	return render(request, 'book/index.html', context)
 #读取数据库
 def login(request):
+	if request.user.is_authenticated():  
+        	return HttpResponseRedirect('/book/')  
 	if request.method == 'POST':
 		form = LoginForm(request.POST)
 		if form.is_valid():
 			username = form.cleaned_data['username']
 			password = request.POST['password']
-			user2 = User.objects.filter(username=username)
+			user2 = User.objects.get(username=username)
 			user = authenticate(username=username, password=password)
-			if user is not None:
-				if check_password(user2.password_hash, password):
-					login(request, user)
+			if user2:
+				if check_password(password, user2.password_hash):
+					if user.is_activate:
+						login(request, user)
 					return  HttpResponseRedirect('/book/')
 				else:
 					print("error!")
@@ -49,25 +52,28 @@ def logout(request):
 
 #Question.objects.get(pk=1)，q.choice_set.all()，q.choice_set.create(choice_text='Not much', votes=0)，q.choice_set.count()
 def register(request):
+	errors = []
 	if request.method == 'POST':
 		form = RegisterForm(request.POST)
 		if form.is_valid():
 			username = request.POST['username']
 			password = request.POST['password']
-			realname = request.POST['realname']
-			age = request.POST['age']
 			email = request.POST['email']
 			phone = request.POST['phone']
 			hashs = make_password(password)
-			if User.objects.filter(username=username) and User.objects.filter(email=email) and User.objects.filter(phone=phone) is None:
-				u = User(username=username, password_hash=hashs, realname=realname, age=age, email=email, phone=phone)
+#user.set_password(password1) 
+			filterResult = User.objects.filter(username=username)
+			f = User.objects.filter(email=email)
+			if len(filterResult)>0 or len(f)>0:  
+				errors.append("用户名或邮箱已存在")
+				return render(request, 'book/register.html', RequestContext(request,{'form': form, 'errors':errors}))
+			else:
+				u = User(username=username, password_hash=hashs, email=email, phone=phone)
 				u.save()
 				return render_to_response('book/success.html', {'username': username})
-			else:
-				return HttpResponse("该用户名或邮箱已被注册过！")
 	else:
 		form = RegisterForm()
-	return render(request, 'book/register.html', {'form': form})
+	return render(request, 'book/register.html', RequestContext(request,{'form': form, 'errors':errors}))
 	
 def search(request):
 	return render(request, 'book/search.html')
@@ -95,3 +101,5 @@ def changefile(request):
 	else:
 		form = HandimgForm()
 	return render(request, 'book/changefile.html', {'form': form})
+
+
