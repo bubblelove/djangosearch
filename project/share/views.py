@@ -8,8 +8,10 @@ from django.contrib.auth.models import User
 from .forms import RegisterForm, LoginForm
 from django.template import RequestContext
 from django.contrib.auth.hashers import check_password, make_password, is_password_usable
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as login_user
+from django.contrib.auth.decorators import login_required
+from django.contrib import auth
 # HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 # Create your views here.
 
@@ -68,10 +70,15 @@ def login(request):
 			if user is not None:
 				if user.is_active:
 					login_user(request, user)
-					return  HttpResponseRedirect('/share/')
+					return HttpResponseRedirect('/share/')
 			else:
 				errors.append('username or password wrong!')
 				return render_to_response('share/login.html', RequestContext(request,{'form': form, 'errors':errors})) 
 	else:
 		form = LoginForm()
 	return render_to_response('share/login.html', RequestContext(request,{'form': form, 'errors':errors}))
+
+@login_required
+def logout(request):
+	auth.logout(request)
+	return HttpResponseRedirect('/share/')
