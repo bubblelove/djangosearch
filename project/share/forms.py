@@ -12,6 +12,9 @@ class RegisterForm(forms.Form):
 	#cc_myself = forms.BooleanField(required=False)
 	#phone = forms.IntegerField()
 
+class LoginForm(forms.Form):
+	username = forms.CharField(label="用户名:", max_length=100, required=True,  error_messages={'required': '请输入用户名'})
+	password = forms.CharField(label="密码:", error_messages={'required': u'请输入密码'}, widget=forms.PasswordInput())
 
 class MultiEmailField(forms.Field):
 	def to_python(self, value):

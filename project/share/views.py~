@@ -5,9 +5,11 @@ from .models import Ebook
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.auth.models import User
-from .forms import RegisterForm
+from .forms import RegisterForm, LoginForm
 from django.template import RequestContext
 from django.contrib.auth.hashers import check_password, make_password, is_password_usable
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as login_user
 # HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 # Create your views here.
 
@@ -56,4 +58,20 @@ def register(request):
 	return render_to_response('share/register.html', RequestContext(request,{'form': form, 'errors':errors}))
 
 def login(request):
-	return HttpResponse("ef")
+	errors = []
+	if request.method == 'POST':
+		form = LoginForm(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			password = form.cleaned_data['password']
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				if user.is_active:
+					login_user(request, user)
+					return  HttpResponseRedirect('/share/')
+			else:
+				errors.append('username or password wrong!')
+				return render_to_response('share/login.html', RequestContext(request,{'form': form, 'errors':errors})) 
+	else:
+		form = LoginForm()
+	return render_to_response('share/login.html', RequestContext(request,{'form': form, 'errors':errors}))
