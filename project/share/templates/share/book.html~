@@ -1,0 +1,13 @@
+
+{% load staticfiles %}
+<title>Book share</title>
+{% if request.user.is_authenticated %}
+导航条的变化
+{% else %}
+
+{% endif %}
+<link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
+{{ ebook.name }}
+{{ ebook.author }}
+<img src="../../static/book/images/index.jpeg" />
+
