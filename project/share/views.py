@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from .forms import RegisterForm, LoginForm, ChangePasswordForm
 from django.template import RequestContext
 from django.contrib.auth.hashers import check_password, make_password, is_password_usable
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate, logout, update_session_auth_hash
 from django.contrib.auth import login as login_user
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
@@ -89,18 +89,21 @@ def logout(request):
 
 @login_required
 def change_password(request):
-	user = request.user
 	if request.method == 'POST':
 		form = ChangePasswordForm(request.POST)
 		if form.is_valid():
+			username = request.user.username
 			oldpassword = form.cleaned_data['oldpassword']
-			if make_password(oldpassword) == user.password:
+			password = form.cleaned_data['password']
+			password2 = form.cleaned_data['password2']
+			user = authenticate(username=username, password=oldpassword)
+			if user is not None and user.is_active:
 				if password == password2:
-					user.password = password
+					user.set_password(password)
 					user.save()
-					return HttpResponse("Successful modification!")
+					return HttpResponse("Successfully Modification")
 				else:
 					print("password must be matched!")
 	else:
 		form = ChangePasswordForm()
-	return render_to_response('share/change_password.html', RequestContext(request,{'form': form}))
+	return render(request, 'share/change_password.html', {'form': form})

@@ -4,10 +4,16 @@
         <div class="pull-right">
             <a href=#>欢迎您：{{ request.user }}</a>  
             <a class="btn danger small" href="{% url 'share:logout' %}">注销</a>
+	    <a href="#">个人中心</a>
+		<a href="#">论坛</a>
+		<a href="#">推荐图书</a>
+		<a href="#">联系客服</a>
         </div>
 {% else %}
 <a href="{% url 'share:login' %}">登录</a>
 <a href="{% url 'share:register' %}">注册</a>
+<a href="#">论坛</a>
+<a href="#">联系客服</a>
 {% endif %}
 <link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
 {% for book in booklist %}
