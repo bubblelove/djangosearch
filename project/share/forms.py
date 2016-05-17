@@ -29,6 +29,11 @@ class MultiEmailField(forms.Field):
 		for email in value:
 			validate_email(email)
 
+class ChangePasswordForm(forms.Form):
+	oldpassword = forms.CharField(label="旧密码:", error_messages={'required': u'请输入密码'}, widget=forms.PasswordInput())
+	password = forms.CharField(label="新密码:", error_messages={'required': u'请输入密码'}, widget=forms.PasswordInput())
+	password2 = forms.CharField(label="确认密码:", error_messages={'required': u'请输入密码'}, widget=forms.PasswordInput())
+
 
 '''如果模型字段设置了choices，那么表单字段的Widget 将设置成Select，其选项来自模型字段的choices。选项通常会包含空选项，并且会默认选择。如果字段是必选的，它会强制用户选择一个选项。如果模型字段的blank=False 且具有一个显示的default 值，将不会包含空选项（初始将选择default 值）class AuthorForm(forms.Form):
     name = forms.CharField(max_length=100)

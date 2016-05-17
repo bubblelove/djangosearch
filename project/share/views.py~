@@ -5,13 +5,17 @@ from .models import Ebook
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.auth.models import User
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, ChangePasswordForm
 from django.template import RequestContext
 from django.contrib.auth.hashers import check_password, make_password, is_password_usable
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as login_user
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
+from PIL import Image, ImageDraw, ImageFont   
+from project.settings import BASE_DIR  
+import cStringIO, string, os, random 
+
 # HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 # Create your views here.
 
@@ -82,3 +86,21 @@ def login(request):
 def logout(request):
 	auth.logout(request)
 	return HttpResponseRedirect('/share/')
+
+@login_required
+def change_password(request):
+	user = request.user
+	if request.method == 'POST':
+		form = ChangePasswordForm(request.POST)
+		if form.is_valid():
+			oldpassword = form.cleaned_data['oldpassword']
+			if make_password(oldpassword) == user.password:
+				if password == password2:
+					user.password = password
+					user.save()
+					return HttpResponse("Successful modification!")
+				else:
+					print("password must be matched!")
+	else:
+		form = ChangePasswordForm()
+	return render_to_response('share/change_password.html', RequestContext(request,{'form': form}))
