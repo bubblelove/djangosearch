@@ -15,6 +15,7 @@ from django.contrib import auth
 from PIL import Image, ImageDraw, ImageFont   
 from project.settings import BASE_DIR  
 import cStringIO, string, os, random 
+from somewhere import handle_uploaded_file
 
 # HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 # Create your views here.
@@ -101,9 +102,15 @@ def change_password(request):
 				if password == password2:
 					user.set_password(password)
 					user.save()
-					return HttpResponse("Successfully Modification")
+					return HttpResponse("Successfully Modification! But please relogin")
 				else:
 					print("password must be matched!")
 	else:
 		form = ChangePasswordForm()
 	return render(request, 'share/change_password.html', {'form': form})
+
+#def book(request,):
+#	return render(request, 'share/book.html', )
+
+#def myself(request, ):
+	#if request.user_is_authrnticated():

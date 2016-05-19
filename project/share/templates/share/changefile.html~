@@ -7,10 +7,31 @@
 </head>
 <body>
 <h1>修改资料</h1>
-<form method="post" enctype="multipart/form-data" >
+
+
+<form enctype="multipart/form-data" method="POST" action="/address/upload/"> 
 {% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="ok"/>
+<input type="file" name="file" />
+ <br /> 
+<table>
+<tr>
+    <td>{{ form.realname.label_tag }}</td>
+    <td>{{ form.realname }}</td>
+</tr>
+  <tr>
+    <td>{{ form.birth_date.label_tag }}</td>
+    <td>{{ form.birth_date }}</td>
+</tr>
+ <tr>
+    <td>{{ form.phone.label_tag }}</td>
+    <td>{{ form.phone }}</td>
+</tr>
+</table>
+<input type="submit" value="修改" />
+<input type="hidden" name="next" value="{{ next }}" />
+ 
 </form>
+
+
 </body>
 </html>

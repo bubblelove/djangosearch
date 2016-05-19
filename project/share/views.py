@@ -5,7 +5,7 @@ from .models import Ebook
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.auth.models import User
-from .forms import RegisterForm, LoginForm, ChangePasswordForm
+from .forms import RegisterForm, LoginForm, ChangePasswordForm, AuthorForm
 from django.template import RequestContext
 from django.contrib.auth.hashers import check_password, make_password, is_password_usable
 from django.contrib.auth import authenticate, logout, update_session_auth_hash
@@ -101,9 +101,23 @@ def change_password(request):
 				if password == password2:
 					user.set_password(password)
 					user.save()
-					return HttpResponse("Successfully Modification")
+					return HttpResponse("Successfully Modification! But please relogin")
 				else:
 					print("password must be matched!")
 	else:
 		form = ChangePasswordForm()
 	return render(request, 'share/change_password.html', {'form': form})
+
+'''@login_required
+def myself(request):
+	user = request.user
+	if request.method == 'POST':
+		form = AuthorForm(request.POST, request.FILES)
+		if form.is_valid():
+			handle_uploaded_file(request.FILES['file'])'''
+
+
+
+#def book(request,):
+#	return render(request, 'share/book.html', )
+
