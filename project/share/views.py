@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Ebook
+from .models import Ebook, UserProfile
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.auth.models import User
@@ -24,8 +24,10 @@ def index(request):
 		user = request.user
 	else:
 		user = request.user
+	profile = UserProfile.objects.get(user_id=user.id)
+	head = profile.head
 	booklist = Ebook.objects.order_by('id')[:5]
-	context = {'booklist': booklist}
+	context = {'booklist': booklist, 'head':head,}
 #book = Ebook.objects.get(pk=ebook_id)
 #question = get_object_or_404(Question, pk=question_id)
 	return render(request, 'share/index.html', context)

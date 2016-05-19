@@ -2,6 +2,7 @@
 <title>Book share</title>
 {% if request.user.is_authenticated %}
         <div class="pull-right">
+	    <img src="../../{{ head }}" height="20" width="20">
             <a href=#>欢迎您：{{ request.user }}</a>  
             <a class="btn danger small" href="{% url 'share:logout' %}">注销</a>
 	    <a href="#">个人中心</a>
@@ -18,7 +19,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
 {% for book in booklist %}
 <li><a>{{ book.name}}</a></li>
-<img src="../../static/book/images/index.jpeg">
+<img src="../../static/share/images/index.jpeg">
 {{ book.author }}
 
 {% endfor %}

@@ -36,11 +36,14 @@ class UserProfile(models.Model):
 	realname = models.CharField(max_length=20,blank=True, null=True)
 	phone = models.IntegerField(blank=True, null=True)
 	birth_date = models.DateField('your birthday', blank=True, null=True)
-	head = models.FileField(upload_to = 'static', blank=True)
+	head = models.ImageField(upload_to ='static', blank=True)
 	address = models.CharField(max_length=200,default='',blank=True, null=True)
 
 	def __unicode__(self):
 		return self.user.username
+
+	class Meta:
+		db_table = 'share_userprofile'
 #先得到user，然后通过user提供的get_profile()来得到profile对象,比如user.get_profile().phone
 #通过user模型得到user的id,就可以通过UserProfile模型来操作对应的profile信息
 '''    user=User()  
