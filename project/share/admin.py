@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
 # Register your models here.
-
+admin.site.unregister(User) 
 class EbookAdmin(admin.ModelAdmin):
 	list_display = ('name', 'author', 'types')
 	list_filter = ['pub_date', 'types']
@@ -19,6 +19,5 @@ class UserProfileInline(admin.StackedInline):
       
 class UserProfileAdmin(UserAdmin):  
 	inlines = [UserProfileInline, ]  
-      
-admin.site.unregister(User)  
+       
 admin.site.register(User,UserProfileAdmin) 

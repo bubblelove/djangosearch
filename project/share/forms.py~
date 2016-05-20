@@ -37,7 +37,7 @@ class ChangePasswordForm(forms.Form):
 class AuthorForm(forms.Form):
 	realname = forms.CharField(label="真实姓名:", max_length=20,required=False)
 	birth_date = forms.DateField(label="生日:", required=False)
-	head = forms.FileField(label="头像:", required=False)
+	head = forms.ImageField(label="头像:", required=False)
 	phone = forms.IntegerField(label="手机号码:", required=False)
 '''如果模型字段设置了choices，那么表单字段的Widget 将设置成Select，其选项来自模型字段的choices。选项通常会包含空选项，并且会默认选择。如果字段是必选的，它会强制用户选择一个选项。如果模型字段的blank=False 且具有一个显示的default 值，将不会包含空选项（初始将选择default 值）
 

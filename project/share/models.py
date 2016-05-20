@@ -36,7 +36,7 @@ class UserProfile(models.Model):
 	realname = models.CharField(max_length=20,blank=True, null=True)
 	phone = models.IntegerField(blank=True, null=True)
 	birth_date = models.DateField('your birthday', blank=True, null=True)
-	head = models.ImageField(upload_to ='static', blank=True)
+	head = models.ImageField(upload_to ='static', blank=True, default='static/user.jpg')
 	address = models.CharField(max_length=200,default='',blank=True, null=True)
 
 	def __unicode__(self):
@@ -50,4 +50,9 @@ class UserProfile(models.Model):
     profile=UserProfile()  
     profile.user_id=user.id  
     profile.phone=phone  
-    profile.save()  '''
+    profile.save()  
+	#用户性别
+GENDER_CHOICES =(
+(u'M',u'Male'),
+(u'F',u'Female'),
+)'''

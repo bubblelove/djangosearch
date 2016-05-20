@@ -108,16 +108,24 @@ def change_password(request):
 					print("password must be matched!")
 	else:
 		form = ChangePasswordForm()
-	return render(request, 'share/change_password.html', {'form': form})
+	return render(request, 'share/change_password', {'form': form})
 
-'''@login_required
-def myself(request):
+@login_required
+def changefile(request):
 	user = request.user
+	profile = UserProfile.objects.get(user_id=user.id)
 	if request.method == 'POST':
 		form = AuthorForm(request.POST, request.FILES)
 		if form.is_valid():
-			handle_uploaded_file(request.FILES['file'])'''
-
+			profile.realname = form.cleaned_data['realname']
+			profile.birth_date = form.cleaned_data['birth_date']
+			profile.head = form.cleaned_data['head']
+			profile.phone = form.cleaned_data['phone']
+			profile.save()
+			return HttpResponse("Successfully upload!")
+	else:
+		form = AuthorForm()
+	return render(request, 'share/changefile.html', {'form': form})
 
 
 #def book(request,):
