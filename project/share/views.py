@@ -61,6 +61,10 @@ def register(request):
 				user.password = p
 				user.email = email
 				user.save()
+				u = User.objects.get(username = username)
+				profile = UserProfile()
+				profile.user_id = u.id
+				profile.save()
 				return render_to_response('share/success.html',{'username':username})
 			else:
 				errors.append('password must be matched.')  

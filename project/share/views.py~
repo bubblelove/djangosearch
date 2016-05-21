@@ -23,6 +23,7 @@ import cStringIO, string, os, random
 def index(request):
 	if request.user.is_authenticated():
 		user = request.user
+		p = user.get_profile()
 		profile = UserProfile.objects.get(user_id=user.id)
 		head = profile.head
 		lists = user.keepbook_set.all()
@@ -30,6 +31,7 @@ def index(request):
 		user = request.user
 		profile = None
 		head = None
+		lists = None
 	booklist = Ebook.objects.order_by('id')[:5]
 	context = {'booklist': booklist, 'head':head, 'lists':lists,}
 #book = Ebook.objects.get(pk=ebook_id)
