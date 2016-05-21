@@ -17,8 +17,11 @@ class Ebook(models.Model):
 	brief = models.CharField(max_length=200)
 	pub_date = models.DateField('date published') #default=datetime.datetime.now().date()
 	types = models.ForeignKey(Type)
-	count = models.IntegerField(blank=True, null=True)
+	#count = models.IntegerField(blank=True, null=True)
 	pub_at = models.CharField(max_length=15) 
+	pic = models.ImageField(upload_to ='static/book', blank=True, default='static/book/index.jpeg')
+	references = models.ForeignKey(User)
+	content = models.TextField(max_length=1000)
 	
 	def __unicode__(self):#中文编码用unicode这个方法
 		return self.name
@@ -46,6 +49,42 @@ class UserProfile(models.Model):
 		db_table = 'share_userprofile'
 #先得到user，然后通过user提供的get_profile()来得到profile对象,比如user.get_profile().phone
 #通过user模型得到user的id,就可以通过UserProfile模型来操作对应的profile信息
+
+class KeepBook(models.Model):
+	user = models.ForeignKey(User)
+	book = models.ForeignKey(Ebook)
+	date = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		return "%s likes book %s" % (self.user, self.book)
+
+class Comment(models.Model):
+	user = models.ForeignKey(User)
+	book = models.ForeignKey(Ebook)
+	date = models.DateTimeField(auto_now_add=True)
+	comments = models.CharField(max_length=500)
+	score = models.IntegerField()	
+
+	def __unicode__(self):
+		return "%s likes book %s" % (self.user, self.book)
+
+class Tribune(models.Model):
+	user = models.ForeignKey(User)
+	contents = models.CharField(max_length=500)
+	date = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		return self.user.username
+
+class Advice(models.Model):
+	user = models.ForeignKey(User)
+	contents = models.TextField(max_length=500)
+	date = models.DateTimeField(auto_now_add=True)
+	phone = models.IntegerField()	
+
+	def __unicode__(self):
+		return self.user.username
+
 '''    user=User()  
     profile=UserProfile()  
     profile.user_id=user.id  

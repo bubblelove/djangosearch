@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Type, Ebook, UserProfile
+from .models import Type, Ebook, UserProfile, KeepBook, Comment, Tribune, Advice
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
@@ -21,3 +21,20 @@ class UserProfileAdmin(UserAdmin):
 	inlines = [UserProfileInline, ]  
        
 admin.site.register(User,UserProfileAdmin) 
+
+admin.site.register(KeepBook)
+
+class CommentAdmin(admin.ModelAdmin):
+	list_display = ('comments', 'score')
+
+admin.site.register(Comment, CommentAdmin)
+
+class TribuneAdmin(admin.ModelAdmin):
+	list_display = ('contents', )
+
+admin.site.register(Tribune, TribuneAdmin)
+
+class AdviceAdmin(admin.ModelAdmin):
+	list_display = ('contents', 'phone')
+
+admin.site.register(Advice, AdviceAdmin)

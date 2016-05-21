@@ -135,8 +135,18 @@ def mycentral(request):
 	profile = UserProfile.objects.get(user_id=user.id)
 	return render(request, 'share/selfcentral.html', {'profile': profile, 'user':user})
 
-
-
+'''@login_required
+def keep(request, book_id):
+	user = request.user
+	book = Ebook.objects.get(id=book_id)
+	#date = datetime.datetime.now()
+	KeepBook.objects.update_or_create(user=user, book=book, date=date)
+	
+@login_required
+def keeplist(request):
+	user = request.user
+	lists = user.KeepBook_set
+	return render_to_response(request, 'share/keeplist.html', {'lists':lists})'''
 
 #def book(request,):
 #	return render(request, 'share/book.html', )

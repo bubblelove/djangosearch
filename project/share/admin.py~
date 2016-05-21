@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Type, Ebook, UserProfile
+from .models import Type, Ebook, UserProfile, KeepBook, Comment, Tribune
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
 # Register your models here.
-
+admin.site.unregister(User) 
 class EbookAdmin(admin.ModelAdmin):
 	list_display = ('name', 'author', 'types')
 	list_filter = ['pub_date', 'types']
@@ -19,6 +19,17 @@ class UserProfileInline(admin.StackedInline):
       
 class UserProfileAdmin(UserAdmin):  
 	inlines = [UserProfileInline, ]  
-      
-admin.site.unregister(User)  
+       
 admin.site.register(User,UserProfileAdmin) 
+
+admin.site.register(KeepBook)
+
+class CommentAdmin(admin.ModelAdmin):
+	list_display = ('comments', 'score')
+
+admin.site.register(Comment, CommentAdmin)
+
+class TribuneAdmin(admin.ModelAdmin):
+	list_display = ('contents', )
+
+admin.site.register(Tribune, TribuneAdmin)
