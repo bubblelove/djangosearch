@@ -1,13 +1,14 @@
 # -*- coding:utf-8 -*-
 from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Ebook, UserProfile
+from .models import Ebook, UserProfile, KeepBook
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.auth.models import User
 from .forms import RegisterForm, LoginForm, ChangePasswordForm, AuthorForm
 from django.template import RequestContext
 from django.contrib.auth.hashers import check_password, make_password, is_password_usable
+import datetime
 from django.contrib.auth import authenticate, logout, update_session_auth_hash
 from django.contrib.auth import login as login_user
 from django.contrib.auth.decorators import login_required
@@ -24,12 +25,14 @@ def index(request):
 		user = request.user
 		profile = UserProfile.objects.get(user_id=user.id)
 		head = profile.head
+		lists = user.keepbook_set.all()
 	else:
 		user = request.user
 		profile = None
 		head = None
+		lists = None
 	booklist = Ebook.objects.order_by('id')[:5]
-	context = {'booklist': booklist, 'head':head,}
+	context = {'booklist': booklist, 'head':head, 'lists':lists,}
 #book = Ebook.objects.get(pk=ebook_id)
 #question = get_object_or_404(Question, pk=question_id)
 	return render(request, 'share/index.html', context)
@@ -135,19 +138,27 @@ def mycentral(request):
 	profile = UserProfile.objects.get(user_id=user.id)
 	return render(request, 'share/selfcentral.html', {'profile': profile, 'user':user})
 
-'''@login_required
+@login_required
 def keep(request, book_id):
 	user = request.user
 	book = Ebook.objects.get(id=book_id)
-	#date = datetime.datetime.now()
+	date = datetime.datetime.now()
 	KeepBook.objects.update_or_create(user=user, book=book, date=date)
+	return HttpResponse('keep succuess!')
 	
 @login_required
 def keeplist(request):
 	user = request.user
-	lists = user.KeepBook_set
-	return render_to_response(request, 'share/keeplist.html', {'lists':lists})'''
+	lists = user.keepbook_set.all()
+	return render(request, 'share/mykeep.html', {'lists': lists})
 
+@login_required
+def cancel(request, book_id):
+	user = request.user
+	book = Ebook.objects.get(id=book_id)
+	c = user.keepbook_set.filter(book=book)
+	c.delete()
+	return HttpResponse('cancel success!')
 #def book(request,):
 #	return render(request, 'share/book.html', )
 

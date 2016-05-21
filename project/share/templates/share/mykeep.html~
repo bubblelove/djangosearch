@@ -1,0 +1,6 @@
+{% for list in lists %}
+<a><p>{{ list.book.name }}</p>
+<p>{{ list.book.author }}</p></a>
+<p>{{ list.date }}</p>
+{% endfor %}
+

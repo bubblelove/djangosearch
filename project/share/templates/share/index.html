@@ -19,7 +19,17 @@
 <link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
 {% for book in booklist %}
 <li><a>{{ book.name}}</a></li>
-<img src="../../static/share/images/index.jpeg">
+<img src="../../{{ book.pic }}">
 {{ book.author }}
+
+{% if request.user.is_authenticated %}
+{% for l in lists %}
+{% if book.id == l.book.id %}
+<a href="{% url 'share:cancel' book.id %}">取消收藏input</a>
+{% else %}
+<a href="{% url 'share:keep' book.id %}">收藏input</a>
+{% endif %}
+{% endfor %}
+{% endif %}
 
 {% endfor %}

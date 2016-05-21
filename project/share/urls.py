@@ -10,5 +10,8 @@ urlpatterns = [
     url(r'^change-password/', views.change_password, name='change_password'),
     url(r'^changefile/', views.changefile, name='changefile'),
     url(r'^mycentral/', views.mycentral, name='mycentral'),
+    url(r'^book/(?P<book_id>[0-9]+)/', views.keep, name='keep'),
+    url(r'^keeplist/', views.keeplist, name='keeplist'),
+    url(r'^cancel/(?P<book_id>[0-9]+)/', views.cancel, name='cancel'),
 ]
 #url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
