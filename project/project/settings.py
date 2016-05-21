@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOGIN_URL = '/share/login/'
 MEDIA_ROOT = '/home/su/project/share/'
 MEDIA_URL='/share/'
-AUTH_PROFILE_MODULE = 'share.userprofile'
+AUTH_PROFILE_MODULE = 'share.UserProfile'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 

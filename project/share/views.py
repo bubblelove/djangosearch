@@ -22,10 +22,12 @@ import cStringIO, string, os, random
 def index(request):
 	if request.user.is_authenticated():
 		user = request.user
+		profile = UserProfile.objects.get(user_id=user.id)
+		head = profile.head
 	else:
 		user = request.user
-	profile = UserProfile.objects.get(user_id=user.id)
-	head = profile.head
+		profile = None
+		head = None
 	booklist = Ebook.objects.order_by('id')[:5]
 	context = {'booklist': booklist, 'head':head,}
 #book = Ebook.objects.get(pk=ebook_id)
@@ -108,7 +110,7 @@ def change_password(request):
 					print("password must be matched!")
 	else:
 		form = ChangePasswordForm()
-	return render(request, 'share/change_password', {'form': form})
+	return render(request, 'share/change_password.html', {'form': form})
 
 @login_required
 def changefile(request):
@@ -126,6 +128,14 @@ def changefile(request):
 	else:
 		form = AuthorForm()
 	return render(request, 'share/changefile.html', {'form': form})
+
+@login_required
+def mycentral(request):
+	user = request.user
+	profile = UserProfile.objects.get(user_id=user.id)
+	return render(request, 'share/selfcentral.html', {'profile': profile, 'user':user})
+
+
 
 
 #def book(request,):

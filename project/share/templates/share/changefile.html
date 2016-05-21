@@ -7,6 +7,10 @@
 </head>
 <body>
 <h1>修改资料</h1>
+<ul>
+<li><a href="{% url 'share:changefile' %}">编辑资料</a></li>
+<li><a href="{% url 'share:change_password' %}">修改密码</a></li>
+</ul>
 <form action="/share/changefile/" method="post" enctype="multipart/form-data">
 {% csrf_token %}
 <input type="file" name="head" />
