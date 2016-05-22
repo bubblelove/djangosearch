@@ -1,6 +1,7 @@
 <ul>
 <li><a href="{% url 'share:changefile' %}">编辑资料</a></li>
 <li><a href="{% url 'share:change_password' %}">修改密码</a></li>
+<li><a href="{% url 'share:keeplist' %}">我的收藏</a></li>
 </ul>
 <div><img src="../../{{ profile.head }}" height="20" width="20">{{ user.username }}
 <p>邮箱:{{ user.email }}</p><p>真实姓名:{{ profile.realname }}</p><p>手机号码:{{ profile.phone }}</p><p>生日:{{ profile.birth_date }}</p></div>

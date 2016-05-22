@@ -19,7 +19,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
 {% for book in booklist %}
 <li><a>{{ book.name}}</a></li>
-<img src="../../{{ book.pic }}">
+<img src="../../{{ book.pic }}" height="330" width="230">
 {{ book.author }}
 
 {% if request.user.is_authenticated %}

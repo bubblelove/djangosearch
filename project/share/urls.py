@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^book/(?P<book_id>[0-9]+)/', views.keep, name='keep'),
     url(r'^keeplist/', views.keeplist, name='keeplist'),
     url(r'^cancel/(?P<book_id>[0-9]+)/', views.cancel, name='cancel'),
+    url(r'^recommend/', views.recommend, name='recommend'),
 ]
 #url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),

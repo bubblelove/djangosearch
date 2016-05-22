@@ -1,11 +1,11 @@
 # -*- coding:utf-8 -*-
 from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Ebook, UserProfile, KeepBook
+from .models import Ebook, UserProfile, KeepBook, Type
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.auth.models import User
-from .forms import RegisterForm, LoginForm, ChangePasswordForm, AuthorForm
+from .forms import RegisterForm, LoginForm, ChangePasswordForm, AuthorForm, RecommendForm
 from django.template import RequestContext
 from django.contrib.auth.hashers import check_password, make_password, is_password_usable
 import datetime
@@ -31,7 +31,7 @@ def index(request):
 		profile = None
 		head = None
 		lists = None
-	booklist = Ebook.objects.order_by('id')[:5]
+	booklist = Ebook.objects.order_by('id')#[:5]
 	context = {'booklist': booklist, 'head':head, 'lists':lists,}
 #book = Ebook.objects.get(pk=ebook_id)
 #question = get_object_or_404(Question, pk=question_id)
@@ -163,6 +163,33 @@ def cancel(request, book_id):
 	c = user.keepbook_set.filter(book=book)
 	c.delete()
 	return HttpResponse('cancel success!')
-#def book(request,):
-#	return render(request, 'share/book.html', )
+
+@login_required
+def recommend(request):
+	errors = []
+	user = request.user
+	book = Ebook()
+	if request.method == 'POST':
+		form = RecommendForm(request.POST, request.FILES)
+		if form.is_valid():
+			name = form.cleaned_data['name']
+			author = form.cleaned_data['author']
+			b = Ebook.objects.filter(name=name, author=author)
+			if b:
+				errors.append('This book has been recommended.') 
+				return render_to_response('share/recommend.html', RequestContext(request,{'form': form, 'errors':errors}))
+			book.name = name
+			book.author = author
+			book.brief = form.cleaned_data['brief']
+			book.pub_date = form.cleaned_data['pub_date']
+			book.types = form.cleaned_data['types']
+			book.pub_at = form.cleaned_data['pub_at'] 
+			book.pic = form.cleaned_data['pic'] 
+			book.content = form.cleaned_data['content'] 
+			book.references = user
+			book.save()
+			return HttpResponse('Recommended success!')
+	else:
+		form = RecommendForm()
+	return render_to_response('share/recommend.html', RequestContext(request,{'form': form, 'errors':errors}))
 

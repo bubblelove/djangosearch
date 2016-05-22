@@ -1,0 +1,49 @@
+<ul>
+<li><a href="{% url 'share:changefile' %}">编辑资料</a></li>
+<li><a href="{% url 'share:change_password' %}">修改密码</a></li>
+<li><a href="{% url 'share:mycentral' %}">返回个人中心</a></li>
+<li><a href="{% url 'share:keeplist' %}">我的收藏</a></li>
+<li><a href="{% url 'share:recommend' %}">推荐图书</a></li>
+</ul>
+{% if errors %}
+{{ errors }}
+{% endif %}
+<form action="/share/recommend/" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<input type="file" name="pic" />
+ <br /> 
+<table>
+<tr>
+    <td>{{ form.name.label_tag }}</td>
+    <td>{{ form.name }}</td>
+</tr>
+  <tr>
+    <td>{{ form.author.label_tag }}</td>
+    <td>{{ form.author }}</td>
+</tr>
+ <tr>
+    <td>{{ form.brief.label_tag }}</td>
+    <td>{{ form.brief }}</td>
+</tr>
+ <tr>
+    <td>{{ form.pub_date.label_tag }}</td>
+    <td>{{ form.pub_date }}</td>
+</tr>
+ <tr>
+    <td>{{ form.types.label_tag }}</td>
+    <td>{{ form.types }}</td>
+</tr>
+ <tr>
+    <td>{{ form.pub_at.label_tag }}</td>
+    <td>{{ form.pub_at }}</td>
+</tr>
+ <tr>
+    <td>{{ form.content.label_tag }}</td>
+    <td>{{ form.content }}</td>
+</tr>
+</table>
+<input type="submit" value="修改" />
+<input type="hidden" name="next" value="{{ next }}" />
+ 
+</form>
+

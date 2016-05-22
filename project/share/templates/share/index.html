@@ -7,7 +7,7 @@
             <a class="btn danger small" href="{% url 'share:logout' %}">注销</a>
 	    <a href="{% url 'share:mycentral' %}">个人中心</a>
 		<a href="#">论坛</a>
-		<a href="#">推荐图书</a>
+		<a href="{% url 'share:recommend' %}">推荐图书</a>
 		<a href="#">联系客服</a>
         </div>
 {% else %}
@@ -19,7 +19,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
 {% for book in booklist %}
 <li><a>{{ book.name}}</a></li>
-<img src="../../{{ book.pic }}">
+<img src="../../{{ book.pic }}" height="330" width="230">
 {{ book.author }}
 
 {% if request.user.is_authenticated %}
