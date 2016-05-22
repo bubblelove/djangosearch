@@ -1,6 +1,6 @@
 {% for list in lists %}
-<a href="#"><p>书名:{{ list.name }}</p>
-<p>作者:{{ list.author }}</p></a>
+<a href="#"><p>{{ list.name }}</p>
+<p>{{ list.author }}</p></a>
 <span><a href="{% url 'share:cancelbook' list.id %}">删除推荐</a></span>
 {% endfor %}
 

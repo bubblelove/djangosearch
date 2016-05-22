@@ -193,3 +193,18 @@ def recommend(request):
 		form = RecommendForm()
 	return render_to_response('share/recommend.html', RequestContext(request,{'form': form, 'errors':errors}))
 
+@login_required
+def recommendlist(request):
+	user = request.user
+	lists = user.ebook_set.all()
+	return render(request, 'share/myrecommend.html', {'lists': lists})
+
+@login_required
+def cancelbook(request, book_id):
+	user = request.user
+	book = Ebook.objects.get(id=book_id)
+	if user == book.references:
+		book.delete()
+		return HttpResponse('cancel success!')
+	else:
+		return HttpResponse('You do not have this permission')
