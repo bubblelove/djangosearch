@@ -1,0 +1,17 @@
+<p>意见反馈</p>
+<form method="post">
+{% csrf_token %}
+<table>
+<tr>
+    <td>{{ form.contents.label_tag }}</td>
+    <td>{{ form.contents }}</td>
+</tr>
+<tr>
+    <td>{{ form.phone.label_tag }}</td>
+    <td>{{ form.phone }}</td>
+</tr>
+</table>
+
+<input type="submit" value="提交" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>

@@ -64,9 +64,13 @@ class Comment(models.Model):
 	date = models.DateTimeField(auto_now_add=True)
 	comments = models.CharField(max_length=500)
 	score = models.IntegerField()	
+	count = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return "%s likes book %s" % (self.user, self.book)
+
+	class Meta:
+		permissions = (("can_manage", "Can Manage comments"), )
 
 class Tribune(models.Model):
 	user = models.ForeignKey(User)
@@ -85,7 +89,22 @@ class Advice(models.Model):
 	def __unicode__(self):
 		return self.user.username
 
-'''    user=User()  
+'''class UserPermission(models.Model):
+	#
+	class Meta:
+		permissions = (
+		('delete_comment','Delete comment'),
+		
+		)
+request.user.has_perm('share.delete_comment')
+@user_passes_test(lambda u: u.has_perm('share.delete_comment'))
+自定义跳转
+@user_passes_test(lambda u: u.has_perm('polls.can_vote'), login_url='/login/')
+{{ perms.foo }}，一个已经登陆的用户对foo的app只要有任何的权限，{{ perms.foo }}就会等于True,反之为False
+{{ perms.foo.can_vote }}
+foo = project
+
+    user=User()  
     profile=UserProfile()  
     profile.user_id=user.id  
     profile.phone=phone  

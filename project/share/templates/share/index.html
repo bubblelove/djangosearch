@@ -1,3 +1,4 @@
+
 {% load staticfiles %}
 <title>Book share</title>
 {% if request.user.is_authenticated %}
@@ -18,7 +19,8 @@
 {% endif %}
 <link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
 {% for book in booklist %}
-<li><a>{{ book.name}}</a></li>
+
+<li><a href="{% url 'share:book' book.id %}">{{ book.name}}</a></li>
 <img src="../../{{ book.pic }}" height="330" width="230">
 {{ book.author }}
 
