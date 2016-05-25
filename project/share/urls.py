@@ -18,5 +18,6 @@ urlpatterns = [
     url(r'^cancelbook/(?P<book_id>[0-9]+)/', views.cancelbook, name='cancelbook'),
     url(r'^feedback/', views.feedback, name='feedback'),
     url(r'^book/(?P<book_id>[0-9]+)/', views.book, name='book'),
+    url(r'^discuss/', views.discuss, name='discuss'),
 ]
 #url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),

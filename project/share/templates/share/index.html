@@ -7,7 +7,7 @@
             <a href=#>欢迎您：{{ request.user }}</a>  
             <a class="btn danger small" href="{% url 'share:logout' %}">注销</a>
 	    <a href="{% url 'share:mycentral' %}">个人中心</a>
-		<a href="#">论坛</a>
+		<a href="{% url 'share:discuss' %}">论坛</a>
 		<a href="{% url 'share:recommend' %}">推荐图书</a>
 		<a href="#">联系客服</a>
         </div>
@@ -23,20 +23,21 @@
 <li><a href="{% url 'share:book' book.id %}">{{ book.name}}</a></li>
 <img src="../../{{ book.pic }}" height="330" width="230">
 {{ book.author }}
-
+<a href="{% url 'share:keep' book.id %}">收藏input</a>
 {% if request.user.is_authenticated %}
 
 {% if lists %}
+
 {% for l in lists %}
+
 {% if book.id == l.book.id %}
 <a href="{% url 'share:cancel' book.id %}">取消收藏input</a>
-{% else %}
-<a href="{% url 'share:keep' book.id %}">收藏input</a>
 {% endif %}
+
 {% endfor %}
-{% else %}
-<a href="{% url 'share:keep' book.id %}">收藏input</a>
+
 {% endif %}
+
 {% endif %}
 
 {% endfor %}

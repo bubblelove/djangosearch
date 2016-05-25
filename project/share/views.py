@@ -1,11 +1,11 @@
 # -*- coding:utf-8 -*-
 from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Ebook, UserProfile, KeepBook, Type, Advice
+from .models import Ebook, UserProfile, KeepBook, Type, Advice, Tribune
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.auth.models import User
-from .forms import RegisterForm, LoginForm, ChangePasswordForm, AuthorForm, RecommendForm, AdviceForm
+from .forms import RegisterForm, LoginForm, ChangePasswordForm, AuthorForm, RecommendForm, AdviceForm, BbsForm
 from django.template import RequestContext
 from django.contrib.auth.hashers import check_password, make_password, is_password_usable
 import datetime
@@ -221,9 +221,25 @@ def feedback(request):
 			Advice.objects.update_or_create(user=user, contents=contents, date=date, phone=phone)
 			return HttpResponse("We have received your advice. We will deal with it as soon as possible")
 	else:
-		form = AdviceForm(request.POST)
+		form = AdviceForm()
 	return render_to_response('share/advice.html', RequestContext(request,{'form': form }))
 
 def book(request, book_id):
 	book = get_object_or_404(Ebook, pk=book_id)
 	return render(request, 'share/book.html', {'book':book })
+
+@login_required
+def discuss(request):
+	user = request.user
+	bbs = Tribune.objects.order_by('date')
+	if request.method == 'POST':
+		form = BbsForm(request.POST)
+		if form.is_valid():
+			contents = form.cleaned_data['contents']
+			date = datetime.datetime.now()
+			Tribune.objects.update_or_create(user=user, contents=contents, date=date)
+			return HttpResponse('success!')
+	else:
+		form = BbsForm()
+		return render_to_response('share/discuss.html', RequestContext(request, {'form': form, 'bbs': bbs }))
+		

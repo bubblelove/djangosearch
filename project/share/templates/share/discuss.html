@@ -1,0 +1,36 @@
+<head>
+<link rel="stylesheet" type="text/css" href="../../static/css/bbs.css" />
+</head>
+<form method="POST">
+{% csrf_token %}
+<table>
+<tr>
+	<td>{{ form.contents.label_tag}}</td>
+	<td>{{ form.contents }}</td>
+</tr>
+</table>
+<input type="submit" value="发表" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+{% load staticfiles %}
+{% for b in bbs %}
+
+<div class="whole">
+<div class="left">
+	<p>
+		<img src="../../{{ b.user.userprofile.head }}" height="80" width="80"> 
+	</p>
+
+	<p>{#b.user是User这个模型，不是UserProfile这个模型，是取不出来的#}
+		<h3>{{ b.user.username }}</h3>
+	<p>
+</div>
+<div class="right">
+	<p>
+		<h3>{{ b.contents }}</h3>
+	</p>
+        <p class="l">{{ b.date }}</p>
+</div>
+</div>
+{% endfor %}
+

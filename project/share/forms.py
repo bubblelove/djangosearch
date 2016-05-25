@@ -64,6 +64,9 @@ class AdviceForm(forms.Form):
 	contents = forms.CharField(max_length=500)
 	phone = forms.IntegerField()
 
+class BbsForm(forms.Form):
+	contents = forms.CharField(max_length=500)
+
 
 '''如果模型字段设置了choices，那么表单字段的Widget 将设置成Select，其选项来自模型字段的choices。选项通常会包含空选项，并且会默认选择。如果字段是必选的，它会强制用户选择一个选项。如果模型字段的blank=False 且具有一个显示的default 值，将不会包含空选项（初始将选择default 值）
 
