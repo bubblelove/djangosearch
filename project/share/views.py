@@ -16,6 +16,7 @@ from django.contrib import auth
 from PIL import Image, ImageDraw, ImageFont   
 from project.settings import BASE_DIR  
 import cStringIO, string, os, random 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
 
 # HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 # Create your views here.
@@ -231,7 +232,19 @@ def book(request, book_id):
 @login_required
 def discuss(request):
 	user = request.user
-	bbs = Tribune.objects.order_by('date')
+	b = Tribune.objects.order_by('-date')
+	after_range_num = 5
+	before_range_num = 4
+	paginator = Paginator(b, 15)
+	page=int(request.GET.get('page','1'))
+	if page <1:
+		page=1
+	try:
+		bbs = paginator.page(page)
+	except PageNotAnInteger:
+		bbs = paginator.page(1)
+	except EmptyPage:
+		bbs = paginator.page(paginator.num_pages)
 	if request.method == 'POST':
 		form = BbsForm(request.POST)
 		if form.is_valid():

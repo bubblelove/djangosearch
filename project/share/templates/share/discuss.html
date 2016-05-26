@@ -34,3 +34,13 @@
 </div>
 {% endfor %}
 
+{% if bbs.has_previous %}
+<a href="?page={{ bbs.previous_page_number }}" title="下一页">上一页</a>
+{% endif %}
+
+<a href="?page={{ bbs.number}}" title="第{{ bbs.number}}页">{{ bbs.number}}</a>
+  
+{% if bbs.has_next %}
+<a href="?page={{ bbs.next_page_number }}" title="下一页">下一页</a> 
+
+{% endif %}
