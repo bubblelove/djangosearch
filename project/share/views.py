@@ -297,7 +297,6 @@ def rate(request, book_id):
 		form = CommentForm()
 		return render_to_response('share/comment.html', RequestContext(request, {'form': form }))
 
-#弄好了评论，评分计算，分数范围，图片显示
 @user_passes_test(lambda u: u.has_perm('share.can_manage'), login_url='/share/')
 def cancelcomment(request, book_id, comment_id):
 	book = Ebook.objects.get(id=book_id)
@@ -305,16 +304,18 @@ def cancelcomment(request, book_id, comment_id):
 	comment.delete()
 	return HttpResponseRedirect(reverse('share:book', args=(book_id,)))
 
-#@permission
-#def commentavaliable(request, comment_id):
-#	comment = Comment.objects.filter(id=comment_id)
-#	comment.available = True
-	#comment.save()
-#	return HttpResponseRedirect()
+@user_passes_test(lambda u: u.has_perm('share.can_manage'), login_url='/share/')
+def commentavaliable(request, book_id, comment_id):
+	book = Ebook.objects.get(id=book_id)
+	comment = Comment.objects.get(id=comment_id)
+	comment.available = True
+	comment.save()
+	return HttpResponseRedirect(reverse('share:book', args=(book_id,)))
 
-#@permission
-#def unavaliable(request, comment_id):
-#	comment = Comment.objects.filter(id=comment_id)
-#	comment.available = False
-	#comment.save()
-#	return HttpResponseRedirect()
+@user_passes_test(lambda u: u.has_perm('share.can_manage'), login_url='/share/')
+def unavaliable(request, book_id, comment_id):
+	book = Ebook.objects.get(id=book_id)
+	comment = Comment.objects.get(id=comment_id)
+	comment.available = False
+	comment.save()
+	return HttpResponseRedirect(reverse('share:book', args=(book_id,)))

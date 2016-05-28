@@ -24,18 +24,24 @@
 {% for comment in comments %}
 {% if perms.share.can_manage %}
 <a href="{% url 'share:cancelcomment' book.id comment.id %}">删除评论</a>
-<a href="#">不可见</a>
-<a href="#">可见</a>
+{% if comment.available %}
+<a href="{% url 'share:unavaliable' book.id comment.id %}">不可见</a>
+{% else %}
+<a href="{% url 'share:commentavaliable' book.id comment.id %}">可见</a>
 {% endif %}
+{% if comment.available %}
+<div>
 <p>用户:{{ comment.user.username }}</p>
 <p>评价:{{ comment.comments }}</p>
 <p>时间:{{ comment.date }}</p>
 <p>评分:{{ comment.score }}</p>
-
+</div>
+{% endif %}
 {% if comment.count %}
 二十字以上评价
 {% endif %}
 
+{% endif %}
 {% endfor %}
 </div>
 
