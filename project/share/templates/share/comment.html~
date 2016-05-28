@@ -1,6 +1,17 @@
-{% if perms.share.can_manage %}
-<a>删除评论</a>
-<a>不可见</a>
-<a>可见</a>
 
-{% endif %}
+<form method="post">
+{% csrf_token %}
+<table>
+<tr>
+    <td>{{ form.comments.label_tag }}</td>
+    <td>{{ form.comments }}</td>
+</tr>
+<tr>
+    <td>{{ form.score.label_tag }}</td>
+    <td>{{ form.score }}</td>
+</tr>
+</table>
+{# <input name='username' class="input-small" type="text" placeholder="用户名">#}
+<input type="submit" value="发表评论" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>

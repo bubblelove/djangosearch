@@ -9,7 +9,7 @@
 	    <a href="{% url 'share:mycentral' %}">个人中心</a>
 		<a href="{% url 'share:discuss' %}">论坛</a>
 		<a href="{% url 'share:recommend' %}">推荐图书</a>
-		<a href="#">联系客服</a>
+		<a href="{% url 'share:feedback' %}">联系客服</a>
         </div>
 {% else %}
 <a href="{% url 'share:login' %}">登录</a>

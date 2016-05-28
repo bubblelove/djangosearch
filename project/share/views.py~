@@ -1,24 +1,23 @@
 # -*- coding:utf-8 -*-
 from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Ebook, UserProfile, KeepBook, Type, Advice, Tribune
+from .models import Ebook, UserProfile, KeepBook, Type, Advice, Tribune, Comment
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.auth.models import User
-from .forms import RegisterForm, LoginForm, ChangePasswordForm, AuthorForm, RecommendForm, AdviceForm, BbsForm
+from .forms import RegisterForm, LoginForm, ChangePasswordForm, AuthorForm, RecommendForm, AdviceForm, BbsForm, CommentForm
 from django.template import RequestContext
 from django.contrib.auth.hashers import check_password, make_password, is_password_usable
 import datetime
 from django.contrib.auth import authenticate, logout, update_session_auth_hash
 from django.contrib.auth import login as login_user
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import auth
 from PIL import Image, ImageDraw, ImageFont   
 from project.settings import BASE_DIR  
 import cStringIO, string, os, random 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
 
-# HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 # Create your views here.
 
 def index(request):
@@ -113,9 +112,9 @@ def change_password(request):
 				if password == password2:
 					user.set_password(password)
 					user.save()
-					return HttpResponse("Successfully Modification! But please relogin")
+					return HttpResponseRedirect('/share/change_password/')
 				else:
-					print("password must be matched!")
+					return HttpResponse("password must be matched!")
 	else:
 		form = ChangePasswordForm()
 	return render(request, 'share/change_password.html', {'form': form})
@@ -132,7 +131,7 @@ def changefile(request):
 			profile.head = form.cleaned_data['head']
 			profile.phone = form.cleaned_data['phone']
 			profile.save()
-			return HttpResponse("Successfully upload!")
+			return HttpResponseRedirect('/share/changefile/')
 	else:
 		form = AuthorForm()
 	return render(request, 'share/changefile.html', {'form': form})
@@ -149,7 +148,7 @@ def keep(request, book_id):
 	book = Ebook.objects.get(id=book_id)
 	date = datetime.datetime.now()
 	KeepBook.objects.update_or_create(user=user, book=book, date=date)
-	return HttpResponse('keep succuess!')
+	return HttpResponseRedirect('/share/')
 	
 @login_required
 def keeplist(request):
@@ -163,7 +162,7 @@ def cancel(request, book_id):
 	book = Ebook.objects.get(id=book_id)
 	c = user.keepbook_set.filter(book=book)
 	c.delete()
-	return HttpResponse('cancel success!')
+	return HttpResponseRedirect('/share/')
 
 @login_required
 def recommend(request):
@@ -189,7 +188,7 @@ def recommend(request):
 			book.content = form.cleaned_data['content'] 
 			book.references = user
 			book.save()
-			return HttpResponse('Recommended success!')
+			return HttpResponseRedirect('/share/recommendlist/')
 	else:
 		form = RecommendForm()
 	return render_to_response('share/recommend.html', RequestContext(request,{'form': form, 'errors':errors}))
@@ -206,7 +205,7 @@ def cancelbook(request, book_id):
 	book = Ebook.objects.get(id=book_id)
 	if user == book.references:
 		book.delete()
-		return HttpResponse('cancel success!')
+		return HttpResponseRedirect('/share/recommendlist/')
 	else:
 		return HttpResponse('You do not have this permission')
 
@@ -227,7 +226,22 @@ def feedback(request):
 
 def book(request, book_id):
 	book = get_object_or_404(Ebook, pk=book_id)
-	return render(request, 'share/book.html', {'book':book })
+	comment = book.comment_set.all()
+	nums = 0
+	for i in comment:
+		nums = i.score + nums
+	num = nums/comment.count() 
+	paginator = Paginator(comment, 10)
+	page=int(request.GET.get('page','1'))
+	if page <1:
+		page=1
+	try:
+		comments = paginator.page(page)
+	except PageNotAnInteger:
+		comments = paginator.page(1)
+	except EmptyPage:
+		comments = paginator.page(paginator.num_pages)
+	return render(request, 'share/book.html', {'book':book, 'comments':comments, 'num': num })
 
 @login_required
 def discuss(request):
@@ -235,7 +249,7 @@ def discuss(request):
 	b = Tribune.objects.order_by('-date')
 	after_range_num = 5
 	before_range_num = 4
-	paginator = Paginator(b, 15)
+	paginator = Paginator(b, 10)
 	page=int(request.GET.get('page','1'))
 	if page <1:
 		page=1
@@ -251,8 +265,56 @@ def discuss(request):
 			contents = form.cleaned_data['contents']
 			date = datetime.datetime.now()
 			Tribune.objects.update_or_create(user=user, contents=contents, date=date)
-			return HttpResponse('success!')
+			return HttpResponseRedirect('/share/discuss/') 
 	else:
 		form = BbsForm()
 		return render_to_response('share/discuss.html', RequestContext(request, {'form': form, 'bbs': bbs }))
 		
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[-1].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return render(request, 'share/ip.html', {'ip': ip})
+
+@login_required
+def rate(request, book_id):
+	user = request.user
+	book = Ebook.objects.get(id=book_id)
+	if request.method == 'POST':
+		form = CommentForm(request.POST)
+		if form.is_valid():
+			content = form.cleaned_data['comments']
+			score = form.cleaned_data['score']
+			date = datetime.datetime.now()
+			if len(content) >= 20:
+				Comment.objects.update_or_create(user=user, book=book, date=date, comments=content, score=score, count=True, available=True)
+			else:
+				Comment.objects.update_or_create(user=user, book=book, date=date, comments=content, score=score)
+			return HttpResponseRedirect(reverse('share:book', args=(book_id,)))
+	else:
+		form = CommentForm()
+		return render_to_response('share/comment.html', RequestContext(request, {'form': form }))
+
+#弄好了评论，评分计算，分数范围，图片显示
+@user_passes_test(lambda u: u.has_perm('share.can_manage'), login_url='/share/')
+def cancelcomment(request, book_id, comment_id):
+	book = Ebook.objects.get(id=book_id)
+	comment = Comment.objects.get(id=comment_id)
+	comment.delete()
+	return HttpResponseRedirect(reverse('share:book', args=(book_id,)))
+
+#@permission
+#def commentavaliable(request, comment_id):
+#	comment = Comment.objects.filter(id=comment_id)
+#	comment.available = True
+	#comment.save()
+#	return HttpResponseRedirect()
+
+#@permission
+#def unavaliable(request, comment_id):
+#	comment = Comment.objects.filter(id=comment_id)
+#	comment.available = False
+	#comment.save()
+#	return HttpResponseRedirect()

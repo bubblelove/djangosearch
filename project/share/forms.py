@@ -53,10 +53,9 @@ class RecommendForm(forms.Form):
 	content = forms.CharField(widget=forms.Textarea())
 
 class CommentForm(forms.Form):
-	date = forms.DateField()
 	comments = forms.CharField(max_length=500)
-	score = forms.IntegerField()	
-	count = forms.BooleanField()
+	score = forms.FloatField(max_value=5.0, min_value=0.0)	
+
 #widget=forms.CheckboxInput()
 #if len(comments)>=20:count=True...
 

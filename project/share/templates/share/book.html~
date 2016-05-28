@@ -4,16 +4,47 @@
 {% if request.user.is_authenticated %}
 导航条的变化
 {% else %}
-
+导航条
 {% endif %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
-{{ book.name }}
-{{ book.author }}
-{{ book.pub_at }}
-{{ book.brief }}
-{{ book.pub_date }}
-{{ book.types }}
-{{ book.content }}
-<img src="../../{{ book.pic }}" height="330" width="230">
+<span><h2>{{ book.name }}</h2></span>
+<span><h3>{{ book.author }}</h3></span>
+<img src="/../../{{ book.pic }}" height="330" width="230">
+<span><h3>店铺评分: {{ num }}</h3></span>
+<span>{{ book.pub_at }}</span>
+<span>{{ book.pub_date }}</span>
+<div>{{ book.brief }}</div>
+<span><h4>类型：{{ book.types }}</h4></span>
+<div>{{ book.content }}</div>
 
+<div>
+<a href="{% url 'share:rate' book.id %}">评论</a>
+{% if perms.share.can_manage %}
+<a href="#">删除评论</a>
+<a href="#">不可见</a>
+<a href="#">可见</a>
+{% endif %}
+{% for comment in comments %}
+<p>用户:{{ comment.user.username }}</p>
+<p>评价:{{ comment.comments }}</p>
+<p>时间:{{ comment.date }}</p>
+<p>评分:{{ comment.score }}</p>
+{% if comment.count %}
+二十字以上评价
+{% endif %}
+{% endfor %}
+</div>
+
+<div>
+{% if comments.has_previous %}
+<a href="?page={{ comments.previous_page_number }}" title="下一页">上一页</a>
+{% endif %}
+
+<a href="?page={{ comments.number}}" title="第{{ comments.number}}页">{{ comments.number}}</a>
+  
+{% if comments.has_next %}
+<a href="?page={{ comments.next_page_number }}" title="下一页">下一页</a> 
+
+{% endif %}
+</div>

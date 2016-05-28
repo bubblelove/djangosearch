@@ -19,7 +19,7 @@
 <div class="left">
 	<p>
 		<img src="../../{{ b.user.userprofile.head }}" height="80" width="80"> 
-	</p>
+	</p>{{ b.user.userprofile.head }}
 
 	<p>{#b.user是User这个模型，不是UserProfile这个模型，是取不出来的#}
 		<h3>{{ b.user.username }}</h3>
@@ -34,7 +34,6 @@
 </div>
 {% endfor %}
 
-{{ bbs.object_list}}
 {% if bbs.has_previous %}
 <a href="?page={{ bbs.previous_page_number }}" title="下一页">上一页</a>
 {% endif %}

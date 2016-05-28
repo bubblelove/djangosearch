@@ -19,5 +19,8 @@ urlpatterns = [
     url(r'^feedback/', views.feedback, name='feedback'),
     url(r'^book/(?P<book_id>[0-9]+)/', views.book, name='book'),
     url(r'^discuss/', views.discuss, name='discuss'),
+    url(r'^get-client-ip/', views.get_client_ip, name='get_client_ip'),
+    url(r'^rate/(?P<book_id>[0-9]+)/', views.rate, name='rate'),
+    url(r'^cancelcomment/(?P<book_id>[0-9]+)/(?P<comment_id>[0-9]+)', views.cancelcomment, name='cancelcomment'),
 ]
 #url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),

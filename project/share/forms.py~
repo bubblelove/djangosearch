@@ -53,10 +53,9 @@ class RecommendForm(forms.Form):
 	content = forms.CharField(widget=forms.Textarea())
 
 class CommentForm(forms.Form):
-	date = forms.DateField()
 	comments = forms.CharField(max_length=500)
-	score = forms.IntegerField()	
-	count = forms.BooleanField()
+	score = forms.FloatField(max_value=5.0, min_value=0.0)	
+
 #widget=forms.CheckboxInput()
 #if len(comments)>=20:count=True...
 
@@ -65,7 +64,7 @@ class AdviceForm(forms.Form):
 	phone = forms.IntegerField()
 
 class BbsForm(forms.Form):
-	contents = models.CharField(max_length=500)
+	contents = forms.CharField(max_length=500)
 
 
 '''如果模型字段设置了choices，那么表单字段的Widget 将设置成Select，其选项来自模型字段的choices。选项通常会包含空选项，并且会默认选择。如果字段是必选的，它会强制用户选择一个选项。如果模型字段的blank=False 且具有一个显示的default 值，将不会包含空选项（初始将选择default 值）
