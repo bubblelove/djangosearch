@@ -9,7 +9,7 @@
 	    <a href="{% url 'share:mycentral' %}">个人中心</a>
 		<a href="{% url 'share:discuss' %}">论坛</a>
 		<a href="{% url 'share:recommend' %}">推荐图书</a>
-		<a href="#">联系客服</a>
+		<a href="{% url 'share:feedback' %}">联系客服</a>
         </div>
 {% else %}
 <a href="{% url 'share:login' %}">登录</a>
@@ -18,10 +18,24 @@
 <a href="#">联系客服</a>
 {% endif %}
 <link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
+<form method="post">
+{% csrf_token %}
+<table>
+<tr>
+	<td>{{ form.search_name.label_tag }}</td>
+	<td>{{ form.search_name }}</td>
+</tr>
+<tr>
+	<td>{{ searchform.search_author.label_tag }}</td>
+	<td>{{ searchform.search_author}}</td>
+</tr>
+</table>
+<input type="submit" value="搜索" />
+<input type="hidden" name="next" value="{{ next }}" />
 {% for book in booklist %}
 
 <li><a href="{% url 'share:book' book.id %}">{{ book.name}}</a></li>
-<img src="../../{{ book.pic }}" height="330" width="230">
+<img src="../../{{ book.pic }}" height="300" width="220">
 {{ book.author }}
 <a href="{% url 'share:keep' book.id %}">收藏input</a>
 {% if request.user.is_authenticated %}

@@ -5,7 +5,7 @@ from .models import Ebook, UserProfile, KeepBook, Type, Advice, Tribune, Comment
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.auth.models import User
-from .forms import RegisterForm, LoginForm, ChangePasswordForm, AuthorForm, RecommendForm, AdviceForm, BbsForm, CommentForm
+from .forms import RegisterForm, LoginForm, ChangePasswordForm, AuthorForm, RecommendForm, AdviceForm, BbsForm, CommentForm, SearchForm, SearchAuthorForm
 from django.template import RequestContext
 from django.contrib.auth.hashers import check_password, make_password, is_password_usable
 import datetime
@@ -32,7 +32,16 @@ def index(request):
 		head = None
 		lists = None
 	booklist = Ebook.objects.order_by('id')#[:5]
-	context = {'booklist': booklist, 'head':head, 'lists':lists,}
+	if request.method == 'POST':
+		form = SearchForm(request.POST)
+		if form.is_valid():
+			search_name = form.cleaned_data['search_name']
+			search_author = search.cleaned_data['search_author']
+			search = Ebook.objects.filter(name__contains=search_name)
+			return render(request, 'share/results.html', {'search': search, })
+	else:
+		form = SearchForm()
+	context = {'booklist': booklist, 'head':head, 'lists':lists, 'form':form,}
 #book = Ebook.objects.get(pk=ebook_id)
 #question = get_object_or_404(Question, pk=question_id)
 	return render(request, 'share/index.html', context)
@@ -228,9 +237,12 @@ def book(request, book_id):
 	book = get_object_or_404(Ebook, pk=book_id)
 	comment = book.comment_set.all()
 	nums = 0
-	for i in comment:
-		nums = i.score + nums
-	num = round(nums/comment.count(), 1) 
+	if comment:
+		for i in comment:
+			nums = i.score + nums
+		num = round(nums/comment.count(), 1) 
+	else:
+		num=5
 	paginator = Paginator(comment, 10)
 	page=int(request.GET.get('page','1'))
 	if page <1:
@@ -312,9 +324,11 @@ def commentavaliable(request, book_id, comment_id):
 	comment.save()
 	return HttpResponseRedirect(reverse('share:book', args=(book_id,)))
 
-#@permission
-#def unavaliable(request, comment_id):
-#	comment = Comment.objects.filter(id=comment_id)
-#	comment.available = False
-	#comment.save()
-#	return HttpResponseRedirect()
+@user_passes_test(lambda u: u.has_perm('share.can_manage'), login_url='/share/')
+def unavaliable(request, book_id, comment_id):
+	book = Ebook.objects.get(id=book_id)
+	comment = Comment.objects.get(id=comment_id)
+	comment.available = False
+	comment.save()
+	return HttpResponseRedirect(reverse('share:book', args=(book_id,)))
+

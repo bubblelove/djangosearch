@@ -1,0 +1,25 @@
+{#固定导航条#}
+{#一个div包在里面，没有显示空的结果和一条提示，有的话显示一个横的展示名字作者时间和链接，排下去#}
+{% if search %}
+<ul>
+{% for book in search %}
+<li>
+	<a href="{% url 'share:book' book.id %}">{{ book.name }}</a>
+</li>
+<li>
+	{{ book.author}}
+</li>
+<li>
+	{{ book.pub_date }}
+</li>
+{% endfor %}
+</ul>
+{% elif result %}
+{% for books in result %}
+<li>
+{{ books.name }}
+</li>
+{% endfor %}
+{% else %}
+<p>很抱歉，没有找到这本书!</p>
+{% endif %}
