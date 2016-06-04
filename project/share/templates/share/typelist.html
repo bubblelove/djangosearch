@@ -1,0 +1,9 @@
+{% if books %}
+{% for book in books %}
+<a href="{% url 'share:book' book.id %}">{{ book.name }}</a>
+{{ book.author }}
+{{ book.pub_date }}
+{% endfor %}
+{% else %}
+<p>没有这类的图书！</p>
+{% endif %}

@@ -21,6 +21,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 # Create your views here.
 
 def index(request):
+	types = Type.objects.all()
 	if request.user.is_authenticated():
 		user = request.user
 		profile = UserProfile.objects.get(user_id=user.id)
@@ -33,6 +34,11 @@ def index(request):
 		lists = None
 	booklist = Ebook.objects.order_by('id')#[:5]
 	if request.method == 'POST':
+		authorform = SearchAuthorForm(request.POST)
+		if authorform.is_valid():
+			search_author = authorform.cleaned_data['search_author']
+			search = Ebook.objects.filter(author__contains=search_author)
+			return render(request, 'share/results.html', {'search': search, })
 		form = SearchForm(request.POST)
 		if form.is_valid():
 			search_name = form.cleaned_data['search_name']
@@ -40,7 +46,8 @@ def index(request):
 			return render(request, 'share/results.html', {'search': search, })
 	else:
 		form = SearchForm()
-	context = {'booklist': booklist, 'head':head, 'lists':lists, 'form':form,}
+		authorform = SearchAuthorForm()
+	context = {'booklist': booklist, 'head':head, 'lists':lists, 'form':form, 'authorform': authorform, 'types':types}
 #book = Ebook.objects.get(pk=ebook_id)
 #question = get_object_or_404(Question, pk=question_id)
 	return render(request, 'share/index.html', context)
@@ -331,3 +338,7 @@ def unavaliable(request, book_id, comment_id):
 	comment.save()
 	return HttpResponseRedirect(reverse('share:book', args=(book_id,)))
 
+def classify(request, type_id):
+	types = get_object_or_404(Type, pk=type_id)
+	books = types.ebook_set.all()
+	return render(request, 'share/typelist.html', {'books':books})

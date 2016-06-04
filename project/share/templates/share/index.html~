@@ -18,6 +18,13 @@
 <a href="#">联系客服</a>
 {% endif %}
 <link rel="stylesheet" type="text/css" href="{% static 'book/style.css' %}" />
+
+<div>
+{% for i in types %}
+<a href="{% url 'share:classify' i.id %}">{{ i.name }}</a>
+{% endfor %}
+</div>
+
 <form method="post">
 {% csrf_token %}
 <table>
@@ -25,13 +32,20 @@
 	<td>{{ form.search_name.label_tag }}</td>
 	<td>{{ form.search_name }}</td>
 </tr>
+</table>
+<input type="submit" value="搜索" />
+<input type="hidden" name="next" value="{{ next }}" />
+<form method="post">
+{% csrf_token %}
+<table>
 <tr>
-	<td>{{ searchform.search_author.label_tag }}</td>
-	<td>{{ searchform.search_author}}</td>
+	<td>{{ authorform.search_author.label_tag }}</td>
+	<td>{{ authorform.search_author }}</td>
 </tr>
 </table>
 <input type="submit" value="搜索" />
 <input type="hidden" name="next" value="{{ next }}" />
+
 {% for book in booklist %}
 
 <li><a href="{% url 'share:book' book.id %}">{{ book.name}}</a></li>

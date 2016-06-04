@@ -24,5 +24,6 @@ urlpatterns = [
     url(r'^cancelcomment/(?P<book_id>[0-9]+)/(?P<comment_id>[0-9]+)', views.cancelcomment, name='cancelcomment'),
     url(r'^commentavaliable/(?P<book_id>[0-9]+)/(?P<comment_id>[0-9]+)', views.commentavaliable, name='commentavaliable'),
     url(r'^unavaliable/(?P<book_id>[0-9]+)/(?P<comment_id>[0-9]+)', views.unavaliable, name='unavaliable'),
+    url(r'^classify/(?P<type_id>[0-9]+)/', views.classify, name='classify'),
 ]
 #url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
